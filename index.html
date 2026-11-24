@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quraishi Pay — پیش‌نمایش</title>
+<style>
+:root{--bg:#090909;--panel:#141414;--panel2:#1b1b1b;--line:#292929;--gold:#d5ad55;--gold2:#f0d48c;--muted:#929292;--text:#f4f1e9;--green:#42c58a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
+button,input,select{font:inherit}.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+aside{background:#101010;border-left:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:26px}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 22px;border-bottom:1px solid var(--line)}
+.logo{width:42px;height:42px;border:1px solid var(--gold);border-radius:13px;display:grid;place-items:center;color:var(--gold2);font-weight:bold;font-size:18px}
+.brand strong{display:block;font-size:17px;letter-spacing:.3px}.brand small{color:var(--muted);font-size:11px}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#bcb8af;text-align:right;padding:13px 14px;border-radius:11px;cursor:pointer}
+.nav button.active,.nav button:hover{background:#292318;color:var(--gold2)}
+.nav span{display:inline-block;width:27px;color:var(--gold);font-size:16px}
+.side-note{margin-top:auto;border:1px solid var(--line);border-radius:13px;padding:13px;color:var(--muted);font-size:11px;line-height:1.9}
+main{padding:28px 34px;max-width:1500px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:27px;gap:12px}
+.eyebrow{color:var(--gold);font-size:12px;margin-bottom:8px}.top h1{font-size:25px;margin:0}.user{border:1px solid var(--line);background:var(--panel);border-radius:30px;padding:9px 14px;color:#ddd;font-size:12px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.balance{background:linear-gradient(125deg,#292929,#111 68%,#090909);border:1px solid #454545;border-radius:20px;padding:25px;min-height:190px;position:relative;overflow:hidden;transition:background .25s,border-color .25s}
+.balance:after{content:"QP";position:absolute;left:25px;bottom:-30px;font-size:130px;color:#ffffff0b;font-weight:bold}
+.balance .card-brand{position:absolute;left:20px;top:18px;color:#ffffffb8;font-size:11px;letter-spacing:1.1px;font-weight:bold}
+.balance .tier{display:inline-block;border:1px solid #777;border-radius:20px;padding:5px 10px;font-size:11px;margin-top:12px;color:#eee;background:#ffffff10}
+.balance.bronze{background:linear-gradient(125deg,#704326,#2a1b13 72%,#120d0a);border-color:#b77b50}
+.balance.silver{background:linear-gradient(125deg,#69717b,#292d33 72%,#111418);border-color:#c4ccd5}
+.balance.gold-tier{background:linear-gradient(125deg,#80621d,#332710 72%,#120e07);border-color:#e4c15e}
+.balance.platinum{background:linear-gradient(125deg,#4d6b78,#1d3039 72%,#0d1418);border-color:#a7d3df}
+.balance.diamond{background:linear-gradient(125deg,#4c3d83,#211c42 72%,#0c0b19);border-color:#c5b5ff}
+.balance .label{color:#c7b994;font-size:13px}.amount{font-size:34px;font-weight:bold;margin:15px 0 8px;direction:ltr;text-align:right}.balance small{color:#b4a98f}
+.rate{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px}
+.rate h3,.section h2{margin:0 0 18px;font-size:16px}.rate-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}.rate-row:last-child{border:0}.gold{color:var(--gold2);font-weight:bold;direction:ltr}
+.actions{display:flex;gap:10px;margin-top:20px}.btn{border:1px solid var(--gold);background:var(--gold);color:#17120a;padding:11px 18px;border-radius:10px;font-weight:bold;cursor:pointer}.btn.secondary{background:transparent;color:var(--gold2)}
+.section{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.section-head h2{margin:0}.muted{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:right;padding:13px 9px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:normal}tr:last-child td{border:0}
+.status{color:var(--green);background:#153025;padding:5px 9px;border-radius:20px;font-size:10px}
+.page{display:none}.page.active{display:block}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field label{display:block;color:#bdb7a9;font-size:12px;margin-bottom:8px}.field input,.field select{width:100%;background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:13px;color:var(--text);outline:none}
+.notice{border:1px solid #574522;background:#211b10;color:#d9c38e;padding:13px;border-radius:11px;font-size:12px;line-height:1.9;margin-top:17px}
+.profile-card{display:flex;gap:14px;align-items:center}.avatar{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#2b2417;color:var(--gold2);font-weight:bold;font-size:20px}
+.support{display:grid;gap:12px}.support input,.support textarea{width:100%;background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:13px;color:white}.support textarea{min-height:100px;resize:vertical}
+.mobile-menu{display:none}
+@media(max-width:800px){.app{grid-template-columns:1fr}aside{display:none}main{padding:20px 14px}.grid{grid-template-columns:1fr}.top h1{font-size:20px}.form-grid{grid-template-columns:1fr}.mobile-menu{display:block;background:transparent;color:var(--gold);border:1px solid var(--line);padding:8px 11px;border-radius:9px}.balance{min-height:170px}.section{padding:16px;overflow:auto}}
+
+.confirm-details{border:1px solid var(--line);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
+.confirm-intro{font-weight:700;color:var(--gold);margin-bottom:12px;line-height:1.9}
+.confirm-row{display:flex;justify-content:space-between;gap:18px;padding:11px 2px;border-bottom:1px solid var(--line);align-items:flex-start}
+.confirm-row:last-of-type{border-bottom:0}
+.confirm-row span{color:var(--muted);flex:0 0 38%}
+.confirm-row b{max-width:62%;text-align:left;overflow-wrap:anywhere;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+ <div class="brand"><div class="logo">QP</div><div><strong>QURAISHI PAY</strong><small>سامانه خدمات مالی</small></div></div>
+ <nav class="nav">
+  <button class="active" data-page="home"><span>⌂</span> داشبورد</button>
+  <button data-page="buy"><span>＋</span> خرید تتر</button>
+  <button data-page="sell"><span>⇄</span> فروش تتر</button>
+  <button data-page="history"><span>▤</span> تاریخچه</button>
+  <button data-page="referral"><span>♧</span> دعوت دوستان</button>
+  <button data-page="profile"><span>♙</span> پروفایل</button>
+  <button data-page="support"><span>◉</span> پشتیبانی</button>
+  <button data-page="admin"><span>⚙</span> پنل مدیریت</button>
+ </nav>
+ <div class="side-note">نسخه نمایشی رابط کاربری<br>هیچ پرداخت یا انتقال واقعی انجام نمی‌شود.</div>
+</aside>
+<main>
+ <div class="top"><div><div class="eyebrow">QURAISHI PAY / پنل کاربری</div><h1 id="pageTitle">داشبورد</h1></div><div style="display:flex;gap:8px;align-items:center"><button class="mobile-menu" onclick="alert('برای جابه‌جایی از منوی پایین صفحه استفاده کنید.')">☰</button><div class="user">● کاربر مهمان</div></div></div>
+
+ <section class="page active" id="home">
+  <div class="grid">
+   <div class="balance" id="memberCard"><div class="card-brand">QURAISHI PAY</div><div class="label">موجودی نمایشی حساب</div><div class="amount">0.00 <span style="font-size:16px;color:var(--gold2)">AFN</span></div><small>آخرین به‌روزرسانی: —</small><div><span class="tier" id="tierBadge">سطح پایه · بدون دعوت</span></div><div class="actions"><button class="btn" onclick="showPage('buy')">خرید تتر</button><button class="btn secondary" onclick="showPage('sell')">فروش تتر</button></div></div>
+   <div class="rate"><h3>نرخ‌های نمایشی</h3><div class="rate-row"><span>خرید هر 1 USDT</span><b class="gold">— AFN</b></div><div class="rate-row"><span>فروش هر 1 USDT</span><b class="gold">— AFN</b></div><div class="rate-row"><span>وضعیت نرخ</span><span class="muted">در انتظار اتصال سرور</span></div></div>
+  </div>
+  <div class="section"><div class="section-head"><h2>آخرین درخواست‌ها</h2><span class="muted">نمایش آزمایشی</span></div><table><thead><tr><th>نوع</th><th>مقدار</th><th>تاریخ</th><th>وضعیت</th></tr></thead><tbody><tr><td colspan="4" class="muted" style="text-align:center;padding:25px">هنوز درخواستی ثبت نشده است.</td></tr></tbody></table></div>
+  <div class="notice">برای فعال‌شدن نرخ زنده، ثبت‌نام کاربران و مدیریت درخواست‌ها، این رابط باید به سرور و پنل مدیریت متصل شود.</div>
+ </section>
+
+ <section class="page" id="buy"><div class="section"><div class="section-head"><h2>درخواست خرید USDT</h2><span class="muted">قیمت خرید هر ۱ تتر: <b id="buyRateLabel" class="gold">تنظیم نشده</b></span></div><div class="form-grid"><div class="field"><label>مقدار تتر (USDT)</label><input id="buyAmount" type="number" min="0" step="any" placeholder="مثلاً 20" oninput="convertAmount('buy','usdt')"></div><div class="field"><label>معادل به افغانی (AFN)</label><input id="buyAFN" type="number" min="0" step="any" placeholder="مثلاً 1000" oninput="convertAmount('buy','afn')"></div><div class="field"><label>روش پرداخت</label><select id="buyMethod"><option value="">انتخاب روش پرداخت</option><option>Hesab Pay</option></select></div><div class="field"><label>شبکه دریافت تتر</label><select id="buyNetwork" onchange="updateBuyFee()"><option value="">ابتدا شبکه را انتخاب کن</option><option value="TRC20">TRC20</option><option value="BEP20">BEP20</option></select></div><div class="field"><label>آدرس ولت مقصد شما</label><input id="buyWallet" placeholder="آدرس ولت خود را وارد کن"></div></div><p id="buyWalletWarning" style="color:#ff5555;font-size:12px;margin:8px 0 0">هشدار: آدرس ولت را با دقت وارد کنید. مسئولیت واردکردن آدرس اشتباه بر عهده شماست و Quraishi Pay مسئولیتی در قبال آن ندارد.</p><div class="notice" id="buyFeeInfo">پس از انتخاب شبکه، کمیشن برداشت نمایش داده می‌شود.</div><div class="notice">این فرم فقط پیش‌نمایش است و درخواست واقعی یا انتقال تتر ثبت نمی‌کند.</div><div class="actions"><button class="btn" onclick="submitDemoOrder('buy',this)">ثبت درخواست آزمایشی</button></div></div></section>
+
+ <section class="page" id="sell"><div class="section"><div class="section-head"><h2>درخواست فروش USDT</h2><span class="muted">قیمت فروش هر ۱ تتر: <b id="sellRateLabel" class="gold">تنظیم نشده</b></span></div><div class="form-grid"><div class="field"><label>مقدار تتر (USDT)</label><input id="sellAmount" type="number" min="0" step="any" placeholder="مثلاً 20" oninput="convertAmount('sell','usdt')"></div><div class="field"><label>معادل به افغانی (AFN)</label><input id="sellAFN" type="number" min="0" step="any" placeholder="مثلاً 1000" oninput="convertAmount('sell','afn')"></div><div class="field"><label>روش دریافت افغانی</label><select id="sellMethod"><option value="">انتخاب روش دریافت</option><option>Hesab Pay</option></select></div><div class="field"><label>نام صاحب حساب</label><input id="sellName" placeholder="نام کامل"></div><div class="field"><label>شماره حساب / آدرس Hesab Pay شما</label><input id="sellPhone" placeholder="مشخصات حساب Hesab Pay"></div><div class="field"><label>شبکه‌ای که تتر را از آن می‌فرستید</label><select id="sellNetwork" onchange="showSellWallet()"><option value="">انتخاب شبکه</option><option value="TRC20">TRC20</option><option value="BEP20">BEP20</option></select></div></div><div class="notice">این فرم فقط پیش‌نمایش است و هیچ دارایی یا پولی جابه‌جا نمی‌کند.</div><div class="actions"><button class="btn" onclick="submitDemoOrder('sell',this)">ثبت درخواست آزمایشی</button></div></div></section>
+
+ <section class="page" id="confirmation"><div class="section"><div class="section-head"><h2>تأیید و تکمیل درخواست</h2><span class="muted">لطفاً مشخصات را با دقت بررسی کن</span></div><div id="confirmationDetails" class="confirm-details"></div><div class="field" style="margin-top:18px"><label>شناسه تراکنش (TxID)</label><input id="confirmTxId" placeholder="شناسه تراکنش را پس از پرداخت وارد کن"></div><div class="notice">پس از انجام پرداخت، شناسه تراکنش را وارد کن و دکمه تأیید را بزن. درخواست در این پیش‌نمایش فقط در همین مرورگر ذخیره می‌شود و به مدیر ارسال نمی‌گردد.</div><div class="actions"><button class="btn" onclick="finalizeDemoOrder()">تأیید و ارسال برای بررسی</button><button class="btn secondary" onclick="showPage(pendingOrder ? pendingOrder.type==='خرید تتر'?'buy':'sell' : 'home')">بازگشت و اصلاح</button></div></div></section>
+ <section class="page" id="history"><div class="section"><div class="section-head"><h2>تاریخچه تراکنش‌ها</h2><span class="muted">همه درخواست‌ها</span></div><table><thead><tr><th>شناسه</th><th>نوع</th><th>مقدار</th><th>وضعیت</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:25px">تراکنشی برای نمایش وجود ندارد.</td></tr></tbody></table></div></section>
+
+ <section class="page" id="referral"><div class="section"><div class="section-head"><h2>دعوت دوستان و ارتقای کارت</h2><span class="muted">برنامه امتیاز وفاداری</span></div><div class="grid"><div><div class="field"><label>لینک دعوت اختصاصی شما</label><input id="refLink" value="https://quraishipay.example/ref/USER" readonly></div><div class="actions"><button class="btn" onclick="copyReferral()">کپی لینک دعوت</button></div><p class="muted" style="line-height:1.9">با دعوت دوستان و ثبت‌نام تأییدشده آن‌ها، سطح کارت شما ارتقا پیدا می‌کند.</p></div><div class="rate"><h3>سطح فعلی شما</h3><div class="rate-row"><span>دعوت‌های تأییدشده</span><b class="gold" id="refCountLabel">۰ نفر</b></div><div class="rate-row"><span>رتبه کارت</span><b class="gold" id="refTierLabel">پایه</b></div><div class="rate-row"><span>هدف بعدی</span><b class="gold" id="nextTierLabel">۲ دعوت</b></div></div></div><div class="section" style="padding:16px;margin-top:18px"><div class="section-head"><h2>پنج سطح کارت</h2><span class="muted">بر اساس دعوت موفق</span></div><div class="rate-row"><span>🥉 برنز</span><b>۲ دعوت</b></div><div class="rate-row"><span>🥈 نقره‌ای</span><b>۵ دعوت</b></div><div class="rate-row"><span>🥇 طلایی</span><b>۱۰ دعوت</b></div><div class="rate-row"><span>💠 پلاتینیوم</span><b>۱۵ دعوت</b></div><div class="rate-row"><span>💎 الماس</span><b>۲۵ دعوت</b></div></div><div class="notice">برای آزمایش تغییر رنگ کارت در این پیش‌نمایش، تعداد دعوت‌ها را تغییر بده. این شمارنده آزمایشی است؛ در نسخه نهایی تعداد واقعی از سرور خوانده می‌شود.</div><div class="field" style="max-width:300px;margin-top:14px"><label>شمارنده آزمایشی دعوت‌ها</label><input id="demoRefCount" type="number" min="0" max="999" value="0" oninput="updateTier(this.value)"></div></div></section>
+
+ <section class="page" id="profile"><div class="section"><div class="profile-card"><div class="avatar">QP</div><div><b>کاربر مهمان</b><div class="muted">حساب هنوز ثبت‌نام نشده است</div></div></div><div class="form-grid" style="margin-top:24px"><div class="field"><label>نام کامل</label><input placeholder="نام و نام خانوادگی"></div><div class="field"><label>ایمیل</label><input type="email" placeholder="name@gmail.com"></div><div class="field"><label>شماره تماس</label><input placeholder="+93 ..."></div><div class="field"><label>کشور</label><input value="افغانستان" readonly></div></div><div class="notice">ثبت‌نام واقعی با گوگل و تأیید هویت در مرحله اتصال به سرور پیاده‌سازی می‌شود.</div></div></section>
+
+ <section class="page" id="admin"><div class="section"><div class="section-head"><h2>پنل مدیریت آزمایشی</h2><span class="muted">مدیریت دستی درخواست‌ها</span></div><div class="notice">این پنل فقط برای نمایش گردش کار است. در نسخه واقعی باید ورود امن مدیر، سطح دسترسی و دیتابیس سرور پیاده‌سازی شود.</div><div class="section" style="padding:16px;margin-top:16px"><h3 style="margin-top:0">تنظیم نرخ‌ها (آزمایشی)</h3><div class="form-grid"><div class="field"><label>نرخ خرید هر ۱ USDT به AFN</label><input id="adminBuyRate" type="number" min="0" step="any" placeholder="نرخ خرید"></div><div class="field"><label>نرخ فروش هر ۱ USDT به AFN</label><input id="adminSellRate" type="number" min="0" step="any" placeholder="نرخ فروش"></div></div><button class="btn" style="margin-top:12px" onclick="saveRates()">ذخیره نرخ‌ها</button></div><div class="section" style="padding:16px;margin-top:16px"><h3 style="margin-top:0">آدرس‌های دریافت تتر (آزمایشی)</h3><div class="form-grid"><div class="field"><label>آدرس ولت TRC20</label><input id="adminTrcWallet" placeholder="آدرس رسمی TRC20"></div><div class="field"><label>آدرس ولت BEP20</label><input id="adminBepWallet" placeholder="آدرس رسمی BEP20"></div></div><button class="btn" style="margin-top:12px" onclick="saveWallets()">ذخیره آدرس‌ها</button><p class="muted">فقط آدرس‌های تحت کنترل خودتان را وارد کنید و قبل از استفاده واقعی شبکه و آدرس را مستقلاً تأیید کنید.</p></div><div class="section" style="padding:16px;margin-top:16px"><h3 style="margin-top:0">مشخصات دریافت پرداخت Hesab Pay (آزمایشی)</h3><div class="field"><label>آدرس / شماره حساب دریافت</label><input id="adminHesabPay" placeholder="بعداً آدرس یا شماره حساب را وارد کنید"></div><button class="btn" style="margin-top:12px" onclick="savePaymentDetails()">ذخیره مشخصات پرداخت</button></div><div class="actions"><button class="btn secondary" onclick="renderOrders()">به‌روزرسانی فهرست</button></div><div id="adminOrders" style="margin-top:18px"></div></div></section>
+
+ <section class="page" id="support"><div class="section"><h2>پشتیبانی</h2><div class="support"><div class="field"><label>موضوع پیام</label><input placeholder="موضوع درخواست"></div><div class="field"><label>توضیحات</label><textarea placeholder="پیام خود را بنویسید..."></textarea></div><button class="btn" style="width:max-content" onclick="alert('ارسال پیام در نسخه نمایشی فعال نیست.')">ارسال پیام (غیرفعال)</button></div></div></section>
+ <div class="muted" style="text-align:center;margin:25px 0 5px">Quraishi Pay · پیش‌نمایش اولیه · 2026</div>
+</main>
+</div>
+<script>
+const titles={home:'داشبورد',buy:'خرید تتر',sell:'فروش تتر',history:'تاریخچه',referral:'دعوت دوستان',profile:'پروفایل',support:'پشتیبانی',admin:'پنل مدیریت',confirmation:'تأیید درخواست'};
+const DEMO_KEY='qp_demo_orders_v1';
+function readOrders(){try{return JSON.parse(localStorage.getItem(DEMO_KEY)||'[]')}catch(e){return []}}
+function saveOrders(items){localStorage.setItem(DEMO_KEY,JSON.stringify(items))}
+function getRates(){try{return JSON.parse(localStorage.getItem('qp_demo_rates')||'{}')}catch(e){return {}}}
+function saveRates(){
+ const buy=Number(document.getElementById('adminBuyRate').value),sell=Number(document.getElementById('adminSellRate').value);
+ if(!(buy>0&&sell>0)){alert('هر دو نرخ باید بیشتر از صفر باشند.');return;}
+ localStorage.setItem('qp_demo_rates',JSON.stringify({buy,sell}));updateRateLabels();alert('نرخ‌های آزمایشی ذخیره شد.');
+}
+function updateRateLabels(){
+ const r=getRates();
+ document.getElementById('buyRateLabel').textContent=r.buy?Number(r.buy).toLocaleString('en-US')+' AFN':'تنظیم نشده';
+ document.getElementById('sellRateLabel').textContent=r.sell?Number(r.sell).toLocaleString('en-US')+' AFN':'تنظیم نشده';
+ const b=document.getElementById('adminBuyRate'),v=document.getElementById('adminSellRate');
+ if(b&&!b.value&&r.buy)b.value=r.buy;if(v&&!v.value&&r.sell)v.value=r.sell;
+}
+function convertAmount(type,source){
+ const rate=getRates()[type];const usdt=document.getElementById(type+'Amount'),afn=document.getElementById(type+'AFN');
+ if(!rate){if(source==='usdt')afn.value='';else usdt.value='';return;}
+ if(source==='usdt')afn.value=usdt.value?(Number(usdt.value)*rate).toFixed(2):'';
+ else usdt.value=afn.value?(Number(afn.value)/rate).toFixed(6):'';
+}
+function updateBuyFee(){
+ const n=document.getElementById('buyNetwork').value,fee=n==='TRC20'?1.2:n==='BEP20'?0.5:0;
+ document.getElementById('buyFeeInfo').textContent=n?`کمیشن برداشت شبکه ${n}: ${fee} USDT. مقدار خالص دریافتی پس از کسر کمیشن در تأیید نهایی مشخص می‌شود.`:'پس از انتخاب شبکه، کمیشن برداشت نمایش داده می‌شود.';
+}
+function saveWallets(){
+ const w={TRC20:document.getElementById('adminTrcWallet').value.trim(),BEP20:document.getElementById('adminBepWallet').value.trim()};
+ localStorage.setItem('qp_demo_wallets',JSON.stringify(w));alert('آدرس‌های نمایشی ذخیره شدند.');
+}
+function showSellWallet(){
+ // آدرس کیف پول مدیر در فرم فروش نمایش داده نمی‌شود؛ فقط در صفحه تأیید می‌آید.
+}
+function savePaymentDetails(){
+ const v=document.getElementById('adminHesabPay').value.trim();
+ localStorage.setItem('qp_demo_hesabpay',v);
+ alert('مشخصات پرداخت نمایشی ذخیره شد.');
+}
+let pendingOrder=null;
+function submitDemoOrder(type,button){
+ const amount=Number(document.getElementById(type+'Amount').value);
+ const afn=Number(document.getElementById(type+'AFN').value);
+ const method=document.getElementById(type+'Method').value;
+ const rate=getRates()[type];
+ if(!rate){alert('مدیر هنوز نرخ '+(type==='buy'?'خرید':'فروش')+' را تنظیم نکرده است.');return;}
+ if(!(amount>0&&afn>0)||!method){alert('لطفاً مقدار تتر، معادل افغانی و روش موردنظر را وارد کن.');return;}
+ const wallets=(()=>{try{return JSON.parse(localStorage.getItem('qp_demo_wallets')||'{}')}catch(e){return {}}})();
+ const paymentAddress=localStorage.getItem('qp_demo_hesabpay')||'آدرس/شماره حساب پرداخت هنوز توسط مدیر تنظیم نشده است';
+ const order={id:'QP-'+Date.now().toString().slice(-7),type:type==='buy'?'خرید تتر':'فروش تتر',amount,amountAFN:afn,rate:Number(rate),method,status:'در انتظار بررسی',created:new Date().toLocaleString('fa-IR')};
+ if(type==='buy'){
+  const network=document.getElementById('buyNetwork').value;
+  const wallet=document.getElementById('buyWallet').value.trim();
+  if(!network||!wallet){alert('لطفاً شبکه و آدرس ولت مقصد را وارد کن.');return;}
+  order.network=network;order.wallet=wallet;order.fee=network==='TRC20'?1.2:0.5;order.netAmount=Math.max(0,amount-order.fee);
+  order.paymentAddress=paymentAddress;
+ }else{
+  const network=document.getElementById('sellNetwork').value;
+  if(!network){alert('شبکه ارسال تتر را انتخاب کن.');return;}
+  order.network=network;order.destinationWallet=wallets[network]||'آدرس این شبکه هنوز توسط مدیر تنظیم نشده است';
+  order.name=document.getElementById('sellName').value.trim();
+  order.phone=document.getElementById('sellPhone').value.trim();
+  if(!order.name||!order.phone){alert('لطفاً نام صاحب حساب و مشخصات حساب Hesab Pay را وارد کن.');return;}
+ }
+ pendingOrder=order;
+ renderConfirmation(order);
+ showPage('confirmation');
+}
+function renderConfirmation(o){
+ const isBuy=o.type==='خرید تتر';
+ const rows=isBuy?[
+  ['نوع درخواست','خرید تتر'],
+  ['مقدار مورد نظر',o.amount+' USDT'],
+  ['مبلغ پرداختی',Number(o.amountAFN).toLocaleString('en-US')+' AFN'],
+  ['روش پرداخت',o.method],
+  ['شبکه دریافت',o.network],
+  ['کمیشن شبکه',''+o.fee+' USDT'],
+  ['مقدار خالص دریافتی',o.netAmount+' USDT'],
+  ['آدرس ولت شما',o.wallet],
+  ['آدرس پرداخت '+o.method,o.paymentAddress]
+ ]:[
+  ['نوع درخواست','فروش تتر'],
+  ['مقدار مورد نظر',o.amount+' USDT'],
+  ['مبلغ دریافتی شما',Number(o.amountAFN).toLocaleString('en-US')+' AFN'],
+  ['روش دریافت وجه',o.method],
+  ['نام صاحب حساب',o.name],
+  ['حساب دریافت افغانی',o.phone],
+  ['شبکه ارسال تتر',o.network],
+  ['آدرس ولت برای واریز تتر',o.destinationWallet]
+ ];
+ document.getElementById('confirmationDetails').innerHTML='<div class="confirm-intro">'+(isBuy?'شما قصد خرید '+o.amount+' تتر را دارید. لطفاً مبلغ و آدرس‌ها را بررسی کن.':'شما قصد فروش '+o.amount+' تتر را دارید. لطفاً مشخصات دریافت افغانی و شبکه را بررسی کن.')+'</div>'+rows.map(([k,v])=>'<div class="confirm-row"><span>'+k+'</span><b dir="auto">'+String(v).replace(/</g,'&lt;')+'</b></div>').join('')+'<p class="muted" style="margin-top:14px">'+(isBuy?'اگر مشخصات درست است، مبلغ افغانی را از طریق روش انتخاب‌شده به آدرس پرداخت بالا واریز کن.':'اگر مشخصات درست است، مقدار تتر را از طریق شبکه انتخاب‌شده به آدرس ولت بالا ارسال کن.')+'</p>';
+ document.getElementById('confirmTxId').value='';
+}
+function finalizeDemoOrder(){
+ if(!pendingOrder){alert('درخواستی برای تأیید وجود ندارد.');return;}
+ const tx=document.getElementById('confirmTxId').value.trim();
+ if(!tx){alert('لطفاً شناسه تراکنش را وارد کن.');return;}
+ pendingOrder.txId=tx;pendingOrder.status='در انتظار بررسی مدیر';pendingOrder.created=new Date().toLocaleString('fa-IR');
+ const items=readOrders();items.unshift(pendingOrder);saveOrders(items);
+ alert('درخواست آزمایشی ثبت شد و در انتظار بررسی است. این اطلاعات فقط در همین مرورگر ذخیره می‌شود.');
+ pendingOrder=null;renderOrders();renderHistory();showPage('history');
+}
+function renderOrders(){
+ const host=document.getElementById('adminOrders');if(!host)return;
+ const items=readOrders();
+ if(!items.length){host.innerHTML='<p class="muted">درخواستی ثبت نشده است.</p>';return;}
+ host.innerHTML=items.map(o=>`<div style="border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>${o.type} · ${o.id}</b><span class="status">${o.status}</span></div><p class="muted">مقدار: ${o.amount} USDT · معادل: ${o.amountAFN||'—'} AFN · نرخ: ${o.rate||'—'} · روش: ${o.method} · شبکه: ${o.network||'—'} · کمیشن: ${o.fee??'—'} USDT · شناسه تراکنش: ${o.txId||'—'} · ${o.created}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="setOrderStatus('${o.id}','در حال بررسی')">در حال بررسی</button><button class="btn" onclick="setOrderStatus('${o.id}','تأیید آزمایشی')">تأیید آزمایشی</button><button class="btn secondary" onclick="setOrderStatus('${o.id}','رد شده')">رد درخواست</button></div></div>`).join('');
+}
+function setOrderStatus(id,status){const items=readOrders().map(o=>o.id===id?{...o,status}:o);saveOrders(items);renderOrders();renderHistory();}
+function renderHistory(){
+ const page=document.getElementById('history');if(!page)return;
+ const body=page.querySelector('tbody');const items=readOrders();
+ body.innerHTML=items.length?items.map(o=>`<tr><td>${o.id}</td><td>${o.type}</td><td>${o.amount} USDT / ${o.amountAFN||'—'} AFN</td><td>${o.status}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:25px">تراکنشی برای نمایش وجود ندارد.</td></tr>';
+}
+
+const tiers=[
+ {min:25,name:'الماس',cls:'diamond',next:'بالاترین سطح'},
+ {min:15,name:'پلاتینیوم',cls:'platinum',next:'۲۵ دعوت'},
+ {min:10,name:'طلایی',cls:'gold-tier',next:'۱۵ دعوت'},
+ {min:5,name:'نقره‌ای',cls:'silver',next:'۱۰ دعوت'},
+ {min:2,name:'برنز',cls:'bronze',next:'۵ دعوت'}
+];
+function updateTier(value){
+ const count=Math.max(0,parseInt(value,10)||0);
+ const tier=tiers.find(t=>count>=t.min);
+ const card=document.getElementById('memberCard');
+ card.classList.remove('bronze','silver','gold-tier','platinum','diamond');
+ const badge=document.getElementById('tierBadge');
+ if(tier){card.classList.add(tier.cls);badge.textContent='سطح '+tier.name+' · '+tier.min+' دعوت به بالا';document.getElementById('refTierLabel').textContent=tier.name;document.getElementById('nextTierLabel').textContent=tier.next;}
+ else{badge.textContent='سطح پایه · بدون دعوت';document.getElementById('refTierLabel').textContent='پایه';document.getElementById('nextTierLabel').textContent='۲ دعوت';}
+ document.getElementById('refCountLabel').textContent=count.toLocaleString('fa-IR')+' نفر';
+}
+function copyReferral(){const el=document.getElementById('refLink');el.select();el.setSelectionRange(0,99999);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(el.value).then(()=>alert('لینک نمونه کپی شد.'));}else{document.execCommand('copy');alert('لینک نمونه کپی شد.');}}
+
+function showPage(id){if(id==='admin'){renderOrders();}updateRateLabels();if(id==='history')renderHistory();document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('pageTitle').textContent=titles[id]||'داشبورد';}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+renderHistory();updateRateLabels();
+</script>
+</body>
+</html>
