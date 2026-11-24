@@ -44,7 +44,33 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:right;
 .profile-card{display:flex;gap:14px;align-items:center}.avatar{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#2b2417;color:var(--gold2);font-weight:bold;font-size:20px}
 .support{display:grid;gap:12px}.support input,.support textarea{width:100%;background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:13px;color:white}.support textarea{min-height:100px;resize:vertical}
 .mobile-menu{display:none}
-@media(max-width:800px){.app{grid-template-columns:1fr}aside{display:none}main{padding:20px 14px}.grid{grid-template-columns:1fr}.top h1{font-size:20px}.form-grid{grid-template-columns:1fr}.mobile-menu{display:block;background:transparent;color:var(--gold);border:1px solid var(--line);padding:8px 11px;border-radius:9px}.balance{min-height:170px}.section{padding:16px;overflow:auto}}
+.mobile-menu-overlay{display:none}
+@media(max-width:800px){
+ .app{grid-template-columns:1fr}
+ aside{
+  display:flex;position:fixed;z-index:1001;top:0;left:0;bottom:0;
+  width:min(300px,86vw);height:100dvh;overflow-y:auto;
+  border-left:0;border-right:1px solid var(--line);
+  padding:24px 16px;gap:26px;
+  transform:translateX(-105%);transition:transform .28s ease;
+  visibility:hidden;box-shadow:12px 0 35px rgba(0,0,0,.35)
+ }
+ body.mobile-nav-open aside{transform:translateX(0);visibility:visible}
+ .mobile-menu-overlay{
+  display:block;position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.68);backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;transition:opacity .28s ease,visibility .28s ease
+ }
+ body.mobile-nav-open .mobile-menu-overlay{opacity:1;visibility:visible}
+ body.mobile-nav-open{overflow:hidden}
+ main{padding:20px 14px}
+ .grid{grid-template-columns:1fr}
+ .top h1{font-size:20px}
+ .form-grid{grid-template-columns:1fr}
+ .mobile-menu{display:block;background:transparent;color:var(--gold);border:1px solid var(--line);padding:8px 11px;border-radius:9px;cursor:pointer}
+ .balance{min-height:170px}
+ .section{padding:16px;overflow:auto}
+}
 
 .confirm-details{border:1px solid var(--line);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
 .confirm-intro{font-weight:700;color:var(--gold);margin-bottom:12px;line-height:1.9}
@@ -55,8 +81,9 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:right;
 </style>
 </head>
 <body>
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true" onclick="closeMobileMenu()"></div>
 <div class="app">
-<aside>
+<aside id="mobileNavigation" aria-label="منوی اصلی">
  <div class="brand"><div class="logo">QP</div><div><strong>QURAISHI PAY</strong><small>سامانه خدمات مالی</small></div></div>
  <nav class="nav">
   <button class="active" data-page="home"><span>⌂</span> داشبورد</button>
@@ -71,7 +98,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:right;
  <div class="side-note">نسخه نمایشی رابط کاربری<br>هیچ پرداخت یا انتقال واقعی انجام نمی‌شود.</div>
 </aside>
 <main>
- <div class="top"><div><div class="eyebrow">QURAISHI PAY / پنل کاربری</div><h1 id="pageTitle">داشبورد</h1></div><div style="display:flex;gap:8px;align-items:center"><button class="mobile-menu" onclick="alert('برای جابه‌جایی از منوی پایین صفحه استفاده کنید.')">☰</button><div class="user">● کاربر مهمان</div></div></div>
+ <div class="top"><div><div class="eyebrow">QURAISHI PAY / پنل کاربری</div><h1 id="pageTitle">داشبورد</h1></div><div style="display:flex;gap:8px;align-items:center"><button class="mobile-menu" id="mobileMenuButton" type="button" aria-label="باز کردن منو" aria-controls="mobileNavigation" aria-expanded="false" onclick="toggleMobileMenu()">☰</button><div class="user">● کاربر مهمان</div></div></div>
 
  <section class="page active" id="home">
   <div class="grid">
@@ -234,7 +261,39 @@ function updateTier(value){
 }
 function copyReferral(){const el=document.getElementById('refLink');el.select();el.setSelectionRange(0,99999);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(el.value).then(()=>alert('لینک نمونه کپی شد.'));}else{document.execCommand('copy');alert('لینک نمونه کپی شد.');}}
 
-function showPage(id){if(id==='admin'){renderOrders();}updateRateLabels();if(id==='history')renderHistory();document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('pageTitle').textContent=titles[id]||'داشبورد';}
+let mobileMenuOpen=false;
+function openMobileMenu(){
+ if(window.innerWidth>800||mobileMenuOpen)return;
+ mobileMenuOpen=true;
+ document.body.classList.add('mobile-nav-open');
+ const button=document.getElementById('mobileMenuButton');
+ if(button)button.setAttribute('aria-expanded','true');
+ // ورودی تاریخچه باعث می‌شود Back گوشی ابتدا منو را ببندد.
+ history.pushState({...history.state,qpMobileMenu:true},'');
+}
+function closeMobileMenu(fromPopState=false){
+ if(!mobileMenuOpen)return;
+ mobileMenuOpen=false;
+ document.body.classList.remove('mobile-nav-open');
+ const button=document.getElementById('mobileMenuButton');
+ if(button)button.setAttribute('aria-expanded','false');
+ if(!fromPopState&&history.state&&history.state.qpMobileMenu)history.back();
+}
+function toggleMobileMenu(){mobileMenuOpen?closeMobileMenu():openMobileMenu();}
+window.addEventListener('popstate',()=>{if(mobileMenuOpen)closeMobileMenu(true);});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&mobileMenuOpen){event.preventDefault();closeMobileMenu();}
+});
+window.addEventListener('resize',()=>{if(window.innerWidth>800&&mobileMenuOpen)closeMobileMenu();});
+function showPage(id){
+ if(id==='admin')renderOrders();
+ updateRateLabels();
+ if(id==='history')renderHistory();
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ document.getElementById('pageTitle').textContent=titles[id]||'داشبورد';
+ closeMobileMenu();
+}
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 renderHistory();updateRateLabels();
 </script>
